@@ -1,5 +1,7 @@
 # fad - framework-agnostic data
 
+[![Codeship Build Status](https://codeship.com/projects/86061510-0365-0134-078c-16bd53bff421/status?branch=master)](https://codeship.com/projects/153844)
+
 Framework-Agnostic Data (representation)
 
 Simple vanilla model system, aimed for easy integration and shared
