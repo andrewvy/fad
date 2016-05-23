@@ -5,6 +5,8 @@ Framework-Agnostic Data (representation)
 Simple vanilla model system, aimed for easy integration and shared
 model code between different JS frameworks.
 
+Heavily inspired by React/Redux.
+
 ### What is the objective?
 
 - A simplistic, narrow library built to handle representing many different data types in a
@@ -41,7 +43,7 @@ import { ModelTypes, createModelType } from 'fad'
 import Store from './Store'
 
 export default createModelType(Store, {
-  properties: {
+  propTypes: {
     size: ModelTypes.number
   }
 })
@@ -56,11 +58,18 @@ import Store from './Store'
 import Wheel from './Wheel'
 
 export default createModelType(Store, {
-  properties: {
+  propTypes: {
     name: ModelTypes.string,
     wheels: [Wheel.type]
   }
 })
+```
+
+Finding models by id:
+
+```js
+Store.where(Car, { id: 1 })
+Store.where(Car, { name: 'Generic Car' })
 ```
 
 ### Internals
