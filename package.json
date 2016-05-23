@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "framework-agnostic data",
   "main": "src/index.js",
+  "directories": {
+    "test": "test"
+  },
   "dependencies": {},
   "devDependencies": {
     "babel-cli": "^6.9.0",

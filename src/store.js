@@ -42,7 +42,7 @@ export class Store {
       let matches = true
 
       propKeys.forEach((propKey) => {
-        if (model.get(propKey) != props[propKey]) {
+        if (model.get(propKey) !== props[propKey]) {
           matches = false
         }
       })
