@@ -1,5 +1,5 @@
-import { Model, ModelTypes, createModelType } from './Model'
-import { createStore } from './Store'
+import { Model, ModelTypes, createModelType } from './model'
+import { createStore } from './store'
 
 export {
   Model,

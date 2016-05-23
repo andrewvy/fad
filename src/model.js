@@ -1,6 +1,6 @@
 import { isEmpty, toString, isNumber, isString, isObject, isArray, isBoolean } from './utils/types'
 import { getKey, set, del } from './utils/path'
-import { Store } from './Store'
+import { Store } from './store'
 import util from 'util'
 
 /**
