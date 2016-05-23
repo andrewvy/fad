@@ -1,7 +1,6 @@
-# vorm
+# fad
 
-Based on [redux-orm](https://github.com/tommikaikkonen/redux-orm/).
+Framework-Agnostic Data (representation)
 
-Simple vanilla ORM / JS model system, with support for multiple frameworks.
-
-Aimed for easy integration + shared model code between different JS frameworks.
+Simple vanilla model system, aimed for easy integration and shared
+model code between different JS frameworks.

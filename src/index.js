@@ -1,5 +1,9 @@
-import { store } from './store'
-import { model } from './model'
+import { Model, ModelTypes, createModelType } from './Model'
+import { createStore } from './Store'
 
-export const store;
-export const model;
+export {
+  Model,
+  ModelTypes,
+  createModelType,
+  createStore
+}

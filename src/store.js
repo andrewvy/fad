@@ -1,33 +1,18 @@
-const Relation = class Relation {
-  constructor(toModelName, relatedName) {
-    this.toModelName = toModelName
-    this.relatedName = relatedName
+export class Store {
+  constructor() {
+    this.modelTypes = {}
+    this.models = {}
+  }
+
+  addModelType(modelConstructor) {
+    this.modelTypes[modelConstructor.type] = modelConstructor
+  }
+
+  removeModelType(modelConstructor) {
+    delete this.modelTypes[modelConstructor.type]
   }
 }
 
-export const ForeignKey = class ForeignKey extends Field {};
-export const ManyToMany = class ForeignKey extends Field {};
-export const OneToOne = class ForeignKey extends Field {};
-
-const Store = class Store {
-  constructor() {
-    this.store = {}
-  }
-
-  addModelType(modelName) {
-    this.store[modelName] = {
-      ids: [], // Array of ids
-      models: {} // id -> model mapping
-    }
-  }
-
-  removeModelType(modelName) {
-    delete this.store[modelName]
-  }
-
-  get(modelName, id) {
-  }
-
-  set(modelName, id) {
-  }
+export const createStore = (props) => {
+  return new Store()
 }
