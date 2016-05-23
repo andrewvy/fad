@@ -56,3 +56,22 @@ describe('Model Attribute Validations', () => {
     expect(createModel).to.throw(Error, '[fad] Tried applying non-existent property \'type\' on model')
   })
 })
+
+describe('Adding models reflects in the store', () => {
+  it('Adding a new model creates an instance in the store', () => {
+    const Store = createStore()
+
+    const CarModel = createModelType(Store, {
+      propTypes: {
+        name: ModelTypes.string
+      }
+    })
+
+    const Car = new CarModel({
+      id: 1,
+      name: 'Generic Car'
+    })
+
+    expect(Store.where(CarModel, { id: 1 })[0]).to.equal(Car)
+  })
+})

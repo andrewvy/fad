@@ -101,6 +101,8 @@ export function createModelType(store, spec) {
 
   let Constructor = function(props) {
     applyProps(this, props)
+
+    if (this.reducer) this.reducer(this)
   }
 
   if (arguments.length === 1 &&
@@ -110,10 +112,11 @@ export function createModelType(store, spec) {
   }
 
   Constructor.constructor = Constructor
+  Constructor.type = Symbol()
   Constructor.prototype = new Model()
   Constructor.prototype.propTypes = isObject(store) === true ? spec.propTypes : {}
-  Constructor.type = Symbol()
-  Constructor.reducer = Store.reducer
+  Constructor.prototype.type = Constructor.type
+  Constructor.prototype.reducer = store.reducer
 
   if (spec.propTypes) {
     delete spec.propTypes
