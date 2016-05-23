@@ -53,6 +53,6 @@ describe('Model Attribute Validations', () => {
       return new CarModel(props)
     }
 
-    expect(createModel).to.throw(Error, `[fad] Tried applying non-existent property 'type' on model`)
+    expect(createModel).to.throw(Error, '[fad] Tried applying non-existent property \'type\' on model')
   })
 })

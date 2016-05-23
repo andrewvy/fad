@@ -88,7 +88,7 @@ function applyProps(instance, props) {
   for (let name in props) {
     let propTypeDefined = proto.hasOwnProperty(name)
 
-    if (propTypeDefined || name == 'id') {
+    if (propTypeDefined || name === 'id') {
       instance[name] = props[name]
     } else {
       throw new Error(`[fad] Tried applying non-existent property '${name}' on model`)
@@ -103,7 +103,7 @@ export function createModelType(store, spec) {
     applyProps(this, props)
   }
 
-  if (arguments.length == 1 &&
+  if (arguments.length === 1 &&
       isObject(store) &&
       !(isUsingStore)) {
     spec = store
@@ -111,7 +111,7 @@ export function createModelType(store, spec) {
 
   Constructor.constructor = Constructor
   Constructor.prototype = new Model()
-  Constructor.prototype.propTypes = isObject(store) == true ? spec.propTypes : {}
+  Constructor.prototype.propTypes = isObject(store) === true ? spec.propTypes : {}
   Constructor.type = Symbol()
   Constructor.reducer = Store.reducer
 
