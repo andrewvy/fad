@@ -34,6 +34,11 @@ export class Store {
     delete this.modelTypes[modelConstructor.prototype.type]
   }
 
+  find(modelConstructor, id) {
+    if (!isObject(this.models[modelConstructor.type])) return null
+    return this.models[modelConstructor.type][id]
+  }
+
   where(modelConstructor, props) {
     if (!isObject(this.models[modelConstructor.type])) return null
     let models = this.models[modelConstructor.type] || {}

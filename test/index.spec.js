@@ -99,7 +99,7 @@ describe('Store', () => {
       name: 'Generic Car'
     })
 
-    expect(Store.where(CarModel, { id: 1 })[0]).to.equal(Car)
+    expect(Store.find(CarModel, 1)).to.equal(Car)
     expect(Store.where(CarModel, { name: 'Generic Car' })[0]).to.equal(Car)
   })
 

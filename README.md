@@ -89,7 +89,7 @@ Task.js
 
 ```js
 export default createModelType(Store, {
-  mixins: [Completeable]
+  mixins: [Completeable],
   propTypes: {
     title: ModelTypes.string
   }
@@ -115,7 +115,11 @@ export default createModelType(Store, {
   propTypes: {
     firstName: ModelTypes.string,
     lastName: ModelTypes.string
-  }
+  },
+
+  fullName: computed('firstName', 'lastName', () => {
+    return `${this.get('firstName')} ${this.get('lastName')}`
+  }),
 
   serialize(props) {
     return {
