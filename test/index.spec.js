@@ -32,6 +32,33 @@ describe('Model Type Creation', () => {
 
     expect(Store.modelTypes[CarModel.type]).to.equal(CarModel)
   })
+
+  it('Two different model types do not have the same symbol', () => {
+    const Store = createStore()
+
+    const CarModel = createModelType(Store, {
+      propTypes: {
+        name: ModelTypes.string
+      }
+    })
+
+    const PlaneModel = createModelType(Store, {
+      propTypes: {
+        name: ModelTypes.string
+      }
+    })
+
+    const FooCar = new CarModel({
+      name: 'Foo Car'
+    })
+
+    const BarCar = new CarModel({
+      name: 'Bar Car'
+    })
+
+    expect(CarModel.type).to.not.equal(PlaneModel.type)
+    expect(FooCar.type).to.equal(BarCar.type)
+  })
 })
 
 describe('Model Attribute Validation', () => {

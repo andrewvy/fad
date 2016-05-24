@@ -8,7 +8,7 @@ export class Store {
   }
 
   addModel(modelInstance) {
-    if (modelInstance === null || modelInstance.id === null) return
+    if (modelInstance === null || modelInstance.id === null || modelInstance.id === undefined) return
     if (this.models[modelInstance.type] === null || this.models[modelInstance.type] === null) return
 
     if (this.models[modelInstance.type][modelInstance.id] !== undefined) {

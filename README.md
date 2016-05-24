@@ -120,7 +120,7 @@ Post.js
 export default createModelType(Store, {
   propTypes: {
     content: ModelTypes.string,
-    author: User.type
+    author: ModelTypes.hasOne(User)
   }
 })
 ```
@@ -160,7 +160,7 @@ Still undecided. Researching a reducer style approach.
 export default createModelType(Store, {
   propTypes: {
     content: ModelTypes.string,
-    author: User.type
+    author: ModelTypes.hasOne(User)
   },
 
   update(state, action) {
