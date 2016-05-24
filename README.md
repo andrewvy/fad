@@ -32,52 +32,58 @@ Some data layers are fairly complex, and provide a lot of functionality outside 
 
 ### Example Implementation:
 
-Store.js
-
 ```js
 import fad from 'fad'
 
-const store = fad.createStore({
-  // some properties here
-})
+let store = fad.createStore()
 
-export default store
-```
-
-Wheel.js
-
-```js
-import fad from 'fad'
-import Store from './Store'
-
-export default fad.createModelType(Store, {
+const Owner = fad.createModel('owner', store, {
   propTypes: {
-    size: fad.ModelTypes.number
+    firstName: fad.PropTypes.string,
+    lastName: fad.PropTypes.string
   }
 })
-```
 
-Car.js
-
-
-```js
-import fad from 'fad'
-import Store from './Store'
-import Wheel from './Wheel'
-
-export default fad.createModelType(Store, {
+const Car = fad.createModel('car', store, {
   propTypes: {
-    name: fad.ModelTypes.string,
-    wheels: fad.ModelTypes.HasMany(Wheel, { reverseKey: 'car_id' })
-  },
-
-  // You can set default props via `getDefaultProps`
-  getDefaultProps: () => {
-    return {
-      name: 'Generic Car'
-    }
+    name: fad.PropTypes.string,
+    owner: fad.PropTypes.hasOne('owner', { key: 'owner_id' })
   }
 })
+
+
+/**
+ * Creating a model instance already inserts it into
+ * the store bounded when we defined the model class.
+ */
+
+let car = new Car({
+  owner_id: 1
+})
+
+// undefined
+console.log(car.get('id'))
+
+// Defined PropTypes default to their defined type
+// ''
+console.log(car.get('name'))
+
+// UnloadedAssocation{ type: 'owner', id: 1 }
+console.log(car.get('owner'))
+
+let owner = new Owner({
+  id: 1,
+  firstName: 'John',
+  lastName: 'Doe'
+})
+
+/**
+ * Adding a new Owner model updates the Car model
+ * instance as Owner has a reverseRelation to Car
+ */
+
+// Owner{ id: 1, firstName: 'John', lastName: 'Doe' }
+console.log(Car.get('owner'))
 ```
 
 ### Mixins (not yet implemented)
