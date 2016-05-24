@@ -174,6 +174,14 @@ export default createModelType(Store, {
 })
 ```
 
+The traditional listener approach
+
+```js
+store.listenTo(this, post, "change:content", callback) // Listen for changes on the post content
+store.off(this) // Clears all listeners bound to this
+store.off(this, "change:content") // Clears the "change:content" listener
+```
+
 ?
 
 ---

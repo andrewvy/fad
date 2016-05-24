@@ -11,6 +11,10 @@ export class Store {
     if (modelInstance === null || modelInstance.id === null) return
     if (this.models[modelInstance.type] === null || this.models[modelInstance.type] === null) return
 
+    if (this.models[modelInstance.type][modelInstance.id] !== undefined) {
+      throw new Error(`[fad] Model with id ${modelInstance.id} already exists in store`)
+    }
+
     this.models[modelInstance.type][modelInstance.id] = modelInstance
   }
 

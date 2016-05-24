@@ -73,5 +73,26 @@ describe('Adding models reflects in the store', () => {
     })
 
     expect(Store.where(CarModel, { id: 1 })[0]).to.equal(Car)
+    expect(Store.where(CarModel, { name: 'Generic Car' })[0]).to.equal(Car)
+  })
+
+  it('Adding a model with the same id throws an error', () => {
+    const Store = createStore()
+
+    const CarModel = createModelType(Store, {
+      propTypes: {
+        name: ModelTypes.string
+      }
+    })
+
+    const createCar = () => {
+      return new CarModel({
+        id: 1,
+        name: 'Generic Car'
+      })
+    }
+
+    expect(createCar).to.not.throw()
+    expect(createCar).to.throw(Error, '[fad] Model with id 1 already exists in store')
   })
 })
