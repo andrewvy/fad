@@ -152,6 +152,30 @@ newPost.serialize()
 
 ```
 
+### Events
+
+Still undecided. Researching a reducer style approach.
+
+```js
+export default createModelType(Store, {
+  propTypes: {
+    content: ModelTypes.string,
+    author: User.type
+  },
+
+  update(state, action) {
+    switch(action.type) {
+      case 'UPDATE_CONTENT':
+        return Object.assign({}, state, { content: action.content })
+      default:
+        return state
+    }
+  }
+})
+```
+
+?
+
 ---
 
 ### Usage
