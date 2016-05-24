@@ -1,7 +1,7 @@
 import { isEmpty, toString, isNumber, isString, isObject, isArray, isBoolean, isFunction } from './utils/types'
 import { getKey, set, del } from './utils/path'
 import { Store } from './store'
-import { Relation, HasOne, HasMany } from './relation'
+import { Relation, HasOne, HasMany, UnloadedAssociation } from './relation'
 import util from 'util'
 
 /**
@@ -209,6 +209,8 @@ function setupRelationships(instance, props) {
 
         if (associatedInstance !== undefined) {
           instance[propName] = associatedInstance
+        } else {
+          instance[propName] = new UnloadedAssociation(relation.modelType, id)
         }
       }
     }

@@ -174,7 +174,7 @@ describe('Model Relationships', () => {
     expect(Car1.get('owner')).to.equal(Owner)
   })
 
-  it('Adding a new model creates an instance in the store', () => {
+  it('Referencing existing model adds it as an associated model', () => {
     const Car2 = new CarModel({
       id: 2,
       name: 'Generic Car',
@@ -183,5 +183,15 @@ describe('Model Relationships', () => {
 
     expect(Car2.get('owner')).to.not.be.undefined
     expect(Car2.get('owner')).to.equal(Owner)
+  })
+
+  it('Referencing non-existant model returns UnloadedAssociation', () => {
+    const Car3 = new CarModel({
+      id: 3,
+      name: 'Generic Car',
+      owner_id: 3
+    })
+
+    expect(Car3.get('owner') instanceof fad.UnloadedAssociation).to.be.true
   })
 })

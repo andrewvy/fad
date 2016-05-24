@@ -36,3 +36,10 @@ export class HasMany extends Relation {
     return this.options.reverse_key || `${this.modelType}_id`
   }
 }
+
+export class UnloadedAssociation {
+  constructor(modelType, id) {
+    this.modelType = modelType
+    this.id = id
+  }
+}
