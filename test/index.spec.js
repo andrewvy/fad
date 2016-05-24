@@ -1,19 +1,19 @@
-import { ModelTypes, createModelType, createStore } from '../src/index'
+import fad from '../src/index'
 import { expect } from 'chai'
 import util from 'util'
 
 describe('Model Type Creation', () => {
-  const Store = createStore()
+  const Store = fad.createStore()
 
-  const CarModel = createModelType('car', Store, {
+  const CarModel = fad.createModelType('car', Store, {
     propTypes: {
-      name: ModelTypes.string
+      name: fad.ModelTypes.string
     }
   })
 
-  const PlaneModel = createModelType('plane', Store, {
+  const PlaneModel = fad.createModelType('plane', Store, {
     propTypes: {
-      name: ModelTypes.string
+      name: fad.ModelTypes.string
     }
   })
 
@@ -48,11 +48,11 @@ describe('Model Type Creation', () => {
 })
 
 describe('Model Attribute Validation', () => {
-  const Store = createStore()
+  const Store = fad.createStore()
 
-  const CarModel = createModelType('car', Store, {
+  const CarModel = fad.createModelType('car', Store, {
     propTypes: {
-      name: ModelTypes.string
+      name: fad.ModelTypes.string
     }
   })
 
@@ -67,12 +67,12 @@ describe('Model Attribute Validation', () => {
   })
 
   it('Creates default attributes based on propTypes', () => {
-    const EverythingModel = createModelType('everything', {
+    const EverythingModel = fad.createModelType('everything', {
       propTypes: {
-        string: ModelTypes.string,
-        bool: ModelTypes.bool,
-        number: ModelTypes.number,
-        array: ModelTypes.array
+        string: fad.ModelTypes.string,
+        bool: fad.ModelTypes.bool,
+        number: fad.ModelTypes.number,
+        array: fad.ModelTypes.array
       }
     })
 
@@ -85,12 +85,12 @@ describe('Model Attribute Validation', () => {
   })
 
   it('getDefaultProps runs', () => {
-    const EverythingModel = createModelType('everything', {
+    const EverythingModel = fad.createModelType('everything', {
       propTypes: {
-        string: ModelTypes.string,
-        bool: ModelTypes.bool,
-        number: ModelTypes.number,
-        array: ModelTypes.array
+        string: fad.ModelTypes.string,
+        bool: fad.ModelTypes.bool,
+        number: fad.ModelTypes.number,
+        array: fad.ModelTypes.array
       },
 
       getDefaultProps: () => {
@@ -113,11 +113,11 @@ describe('Model Attribute Validation', () => {
 })
 
 describe('Store', () => {
-  const Store = createStore()
+  const Store = fad.createStore()
 
-  const CarModel = createModelType('car', Store, {
+  const CarModel = fad.createModelType('car', Store, {
     propTypes: {
-      name: ModelTypes.string
+      name: fad.ModelTypes.string
     }
   })
 

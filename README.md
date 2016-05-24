@@ -35,9 +35,9 @@ Some data layers are fairly complex, and provide a lot of functionality outside 
 Store.js
 
 ```js
-import { createStore } from 'fad'
+import fad from 'fad'
 
-const store = createStore({
+const store = fad.createStore({
   // some properties here
 })
 
@@ -47,12 +47,12 @@ export default store
 Wheel.js
 
 ```js
-import { ModelTypes, createModelType } from 'fad'
+import fad from 'fad'
 import Store from './Store'
 
-export default createModelType(Store, {
+export default fad.createModelType(Store, {
   propTypes: {
-    size: ModelTypes.number
+    size: fad.ModelTypes.number
   }
 })
 ```
@@ -61,14 +61,14 @@ Car.js
 
 
 ```js
-import { ModelTypes, createModelType } from 'fad'
+import fad from 'fad'
 import Store from './Store'
 import Wheel from './Wheel'
 
-export default createModelType(Store, {
+export default fad.createModelType(Store, {
   propTypes: {
-    name: ModelTypes.string,
-    wheels: ModelTypes.HasMany(Wheel, { reverseKey: 'car_id' })
+    name: fad.ModelTypes.string,
+    wheels: fad.ModelTypes.HasMany(Wheel, { reverseKey: 'car_id' })
   },
 
   // You can set default props via `getDefaultProps`
@@ -85,9 +85,9 @@ export default createModelType(Store, {
 Completeable.js
 
 ```js
-export default createModelMixin({
+export default fad.createModelMixin({
   propTypes: {
-    completed: ModelTypes.bool
+    completed: fad.ModelTypes.bool
   }
 })
 ```
@@ -95,10 +95,10 @@ export default createModelMixin({
 Task.js
 
 ```js
-export default createModelType(Store, {
+export default fad.createModelType(Store, {
   mixins: [Completeable],
   propTypes: {
-    title: ModelTypes.string
+    title: fad.ModelTypes.string
   }
 })
 ```
@@ -118,10 +118,10 @@ The default serialization method will default to propType names.
 User.js
 
 ```js
-export default createModelType(Store, {
+export default fad.createModelType(Store, {
   propTypes: {
-    firstName: ModelTypes.string,
-    lastName: ModelTypes.string
+    firstName: fad.ModelTypes.string,
+    lastName: fad.ModelTypes.string
   },
 
   fullName: computed('firstName', 'lastName', () => {
@@ -139,10 +139,10 @@ export default createModelType(Store, {
 Post.js
 
 ```js
-export default createModelType(Store, {
+export default fad.createModelType(Store, {
   propTypes: {
-    content: ModelTypes.string,
-    author: ModelTypes.belongsTo(User)
+    content: fad.ModelTypes.string,
+    author: fad.ModelTypes.belongsTo(User)
   }
 })
 ```
@@ -179,10 +179,10 @@ newPost.serialize()
 Still undecided. Researching a reducer style approach.
 
 ```js
-export default createModelType(Store, {
+export default fad.createModelType(Store, {
   propTypes: {
-    content: ModelTypes.string,
-    author: ModelTypes.belongsTo(User)
+    content: fad.ModelTypes.string,
+    author: fad.ModelTypes.belongsTo(User)
   },
 
   update(state, action) {
