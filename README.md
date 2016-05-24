@@ -4,8 +4,7 @@
 
 Framework-Agnostic Data (representation)
 
-Simple vanilla model system, aimed for easy integration and shared
-model code between different JS frameworks.
+Simple vanilla model system, aimed for easy integration and shared model code between different JS frameworks.
 
 Heavily inspired by React/Redux.
 
@@ -19,12 +18,8 @@ Heavily inspired by React/Redux.
 - This is not an full-featured ORM. It only provides simple methods to compose data types together.
 - This does not communicate to any back-end. It only provides methods to create adapters for (de)serialization.
 
-### What are data types?
 
-Data types are the unique model types used within an application. These data types
-hold a specification of their properties and their relationships with other data types.
-
-### Example usage:
+### Example Implementation:
 
 Store.js
 
@@ -67,9 +62,109 @@ export default createModelType(Store, {
 })
 ```
 
-Finding models by id:
+### Mixins
+
+Completeable.js
 
 ```js
+export default createModelMixin({
+  propTypes: {
+    completed: ModelTypes.bool
+  }
+})
+```
+
+Task.js
+
+```js
+export default createModelType(Store, {
+  mixins: [Completeable]
+  propTypes: {
+    title: ModelTypes.string
+  }
+})
+```
+
+### Serialization
+
+Since the serialize methods on models are idempotent and composable, we can compose a
+single serialize method that is a combination of nested serialized methods.
+
+Serialization will become very fast as we can memoize the returned values, only serializing the objects
+that have changes within the structure.
+
+Mixins with properties will be flattened to the parent, while nested relationships will become nested objects.
+
+The default serialization method will default to propType names.
+
+User.js
+
+```js
+export default createModelType(Store, {
+  propTypes: {
+    firstName: ModelTypes.string,
+    lastName: ModelTypes.string
+  }
+
+  serialize(props) {
+    return {
+      id: props.id
+    }
+  }
+})
+```
+
+Post.js
+
+```js
+export default createModelType(Store, {
+  propTypes: {
+    content: ModelTypes.string,
+    author: User.type
+  }
+})
+```
+
+example.js
+
+```js
+let user = new User({
+  id: 1,
+  firstName: "Foo",
+  lastName: "Bar"
+})
+
+let newPost = new Post({
+  content: "Hello world!",
+  author: user
+})
+
+newPost.serialize()
+
+/* Returns
+ * {
+ *   content: "Hello world!"
+ *   author: {
+ *     id: 1
+ *   }
+ * }
+ */
+
+```
+
+---
+
+### Usage
+
+
+Finding models by properties:
+
+```js
+let car = new Car({
+  id: 1,
+  name: 'Test'
+})
+
 Store.where(Car, { id: 1 })
 Store.where(Car, { name: 'Generic Car' })
 ```
