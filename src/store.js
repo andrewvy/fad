@@ -9,29 +9,29 @@ export class Store {
 
   addModel(modelInstance) {
     if (modelInstance === null || modelInstance.id === null || modelInstance.id === undefined) return
-    if (this.models[modelInstance.type] === null || this.models[modelInstance.type] === null) return
+    if (this.models[modelInstance.__$modeltype] === null || this.models[modelInstance.__$modeltype] === null) return
 
-    if (this.models[modelInstance.type][modelInstance.id] !== undefined) {
+    if (this.models[modelInstance.__$modeltype][modelInstance.id] !== undefined) {
       throw new Error(`[fad] Model with id ${modelInstance.id} already exists in store`)
     }
 
-    this.models[modelInstance.type][modelInstance.id] = modelInstance
+    this.models[modelInstance.__$modeltype][modelInstance.id] = modelInstance
   }
 
   removeModel(modelInstance) {
     if (modelInstance === null || modelInstance.id === null) return
-    if (this.models[modelInstance.type] === null || this.models[modelInstance.type] === null) return
+    if (this.models[modelInstance.__$modeltype] === null || this.models[modelInstance.__$modeltype] === null) return
 
-    delete this.models[modelInstance.type][modelInstance.id]
+    delete this.models[modelInstance.__$modeltype][modelInstance.id]
   }
 
   addModelType(modelConstructor) {
-    this.modelTypes[modelConstructor.prototype.type] = modelConstructor
-    this.models[modelConstructor.prototype.type] = {}
+    this.modelTypes[modelConstructor.type] = modelConstructor
+    this.models[modelConstructor.type] = {}
   }
 
   removeModelType(modelConstructor) {
-    delete this.modelTypes[modelConstructor.prototype.type]
+    delete this.modelTypes[modelConstructor.type]
   }
 
   find(modelConstructor, id) {

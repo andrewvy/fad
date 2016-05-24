@@ -41,3 +41,8 @@ export const isArray = Array.isArray || function(obj) {
 export function isBoolean(obj) {
   return typeof obj === 'boolean' || toString(obj) === '[object Boolean]'
 }
+
+export function isFunction(functionToCheck) {
+  let getType = {}
+  return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]'
+}

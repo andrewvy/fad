@@ -1,4 +1,4 @@
-import { isEmpty, toString, isNumber, isString, isObject, isArray, isBoolean } from './utils/types'
+import { isEmpty, toString, isNumber, isString, isObject, isArray, isBoolean, isFunction } from './utils/types'
 import { getKey, set, del } from './utils/path'
 import { Store } from './store'
 import { HasOne, HasMany } from './relation'
@@ -16,8 +16,8 @@ export const ModelTypes = {
   number: Symbol(),
   string: Symbol(),
   array: Symbol(),
-  hasOne: HasOne,
-  hasMany: HasMany
+  hasOne: (model, options) => new HasOne(model, options),
+  hasMany: (model, options) => new HasMany(model, options)
 }
 
 export default class Model {
@@ -104,19 +104,55 @@ function mixSpecificationIntoModelType(Constructor, spec) {
 
 function applyProps(instance, props) {
   let proto = instance.propTypes || {}
+  let defaults = instance.__$defaultProps || {}
+
+  for (let name in defaults) {
+    let propTypeDefined = proto.hasOwnProperty(name)
+
+    if (propTypeDefined || name === 'id') {
+      instance[name] = defaults[name]
+    }
+  }
 
   for (let name in props) {
     let propTypeDefined = proto.hasOwnProperty(name)
 
     if (propTypeDefined || name === 'id') {
       instance[name] = props[name]
-    } else {
-      throw new Error(`[fad] Tried applying non-existent property '${name}' on model`)
     }
   }
 }
 
-export function createModelType(store, spec) {
+function calculateDefaultProps(Constructor) {
+  let proto = Constructor.prototype.propTypes || {}
+  let defaults = isFunction(Constructor.prototype.getDefaultProps) ? Constructor.prototype.getDefaultProps() : {}
+
+  for (let name in proto) {
+    let propType = proto[name]
+    let propertyDefined = defaults.hasOwnProperty(name)
+
+    if (propertyDefined) continue
+
+    switch (propType) {
+      case ModelTypes.bool:
+        defaults[name] = false
+        break
+      case ModelTypes.number:
+        defaults[name] = 0
+        break
+      case ModelTypes.string:
+        defaults[name] = ''
+        break
+      case ModelTypes.array:
+        defaults[name] = []
+        break
+    }
+  }
+
+  Constructor.prototype.__$defaultProps = defaults
+}
+
+export function createModelType(type, store, spec) {
   let isUsingStore = store instanceof Store
 
   let Constructor = function(props) {
@@ -125,17 +161,20 @@ export function createModelType(store, spec) {
     if (this.reducer) this.reducer(this)
   }
 
-  if (arguments.length === 1 &&
-      isObject(store) &&
-      !(isUsingStore)) {
+  if (!isUsingStore && isObject(store)) {
     spec = store
   }
 
+  if (!isString(arguments[0])) {
+    throw new Error('[fad] Expected first argument to createModelType to be name of model type')
+  }
+
+  Constructor.type = type
   Constructor.constructor = Constructor
-  Constructor.type = Symbol()
+
   Constructor.prototype = new Model()
   Constructor.prototype.propTypes = isObject(store) === true ? spec.propTypes : {}
-  Constructor.prototype.type = Constructor.type
+  Constructor.prototype.__$modeltype = Constructor.type
   Constructor.prototype.reducer = store.reducer
 
   if (spec.propTypes) {
@@ -147,6 +186,7 @@ export function createModelType(store, spec) {
   }
 
   mixSpecificationIntoModelType(Constructor, spec)
+  calculateDefaultProps(Constructor)
 
   return Constructor
 }

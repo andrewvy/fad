@@ -69,6 +69,13 @@ export default createModelType(Store, {
   propTypes: {
     name: ModelTypes.string,
     wheels: ModelTypes.HasMany(Wheel, { reverseKey: 'car_id' })
+  },
+
+  // You can set default props via `getDefaultProps`
+  getDefaultProps: () => {
+    return {
+      name: 'Generic Car'
+    }
   }
 })
 ```
