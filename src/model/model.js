@@ -1,8 +1,12 @@
-import { isEmpty, toString, isNumber, isString, isObject, isArray, isBoolean, isFunction } from './utils/types'
-import { getKey, get, set, del } from './utils/path'
-import { Store } from './store'
-import { Relation, HasOne, HasMany, UnloadedAssociation } from './relation'
-import util from 'util'
+import { isEmpty, toString, isNumber, isString, isObject, isArray, isBoolean, isFunction } from '../utils/types'
+import { getKey, get, set, del } from '../utils/path'
+
+import { Store } from '../store/store'
+
+import Relation from '../relation/relation'
+import UnloadedAssociation from '../relation/unloaded_association'
+
+import ModelTypes from './model_types'
 
 /**
  * Heavily inspired by React's createClass and Class Mixin behaviour,
@@ -11,18 +15,33 @@ import util from 'util'
  * and deserializing.
  */
 
-export const ModelTypes = {
-  bool: Symbol(),
-  number: Symbol(),
-  string: Symbol(),
-  array: Symbol(),
-  hasOne: (modelType, options) => new HasOne(modelType, options),
-  hasMany: (modelType, options) => new HasMany(modelType, options)
+const toJSON = (object) => {
+  const PROTECTED_KEYS = ['guid', '__$relations']
+  let keys = Object.keys(object)
+  let json = {}
+
+  keys.forEach((key) => {
+    if (PROTECTED_KEYS.indexOf(key) === -1) {
+      let value = object[key]
+      if (isObject(value) && value.guid) {
+        json[key] = toJSON(value)
+      } else if (isArray(value)) {
+        json[key] = value.map((elem) => toJSON(elem))
+      } else {
+        json[key] = object[key]
+      }
+    }
+  })
+
+  return json
 }
 
 export default class Model {
   deserialize() {}
-  serialize() {}
+  serialize() {
+    return JSON.stringify(toJSON(this))
+  }
+
   validate() {}
 
   /**

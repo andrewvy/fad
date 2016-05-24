@@ -200,3 +200,63 @@ describe('Model Relationships', () => {
     expect(Car3.get('owner') instanceof fad.UnloadedAssociation).to.be.true
   })
 })
+
+describe('Model Serialization', () => {
+  const Store = fad.createStore()
+
+  const CarModel = fad.createModelType('car', Store, {
+    propTypes: {
+      name: fad.ModelTypes.string,
+      owner: fad.ModelTypes.hasOne('owner', { key: 'owner_id' })
+    }
+  })
+
+  const OwnerModel = fad.createModelType('owner', Store, {
+    propTypes: {
+      name: fad.ModelTypes.string
+    }
+  })
+
+  const Owner = new OwnerModel({
+    id: 1,
+    name: 'John Doe'
+  })
+
+  it('Serializing a model returns expected attributes', () => {
+    const Car = new CarModel({
+      id: 1,
+      name: 'Generic Car'
+    })
+
+    const SerializedCar = Car.serialize()
+    const DeserializedCar = JSON.parse(SerializedCar)
+
+    expect(DeserializedCar.name).to.equal(Car.get('name'))
+    expect(DeserializedCar.id).to.equal(Car.id)
+  })
+
+  it('Serializing removed protected attributes', () => {
+    const Car = new CarModel({
+      id: 2,
+      name: 'Generic Car'
+    })
+
+    const SerializedCar = Car.serialize()
+    const DeserializedCar = JSON.parse(SerializedCar)
+
+    expect(DeserializedCar.guid).to.be.undefined
+  })
+
+  it('Serializing also serializes nested models', () => {
+    const Car = new CarModel({
+      id: 3,
+      name: 'Generic Car',
+      owner_id: 1
+    })
+
+    const SerializedCar = Car.serialize()
+    const DeserializedCar = JSON.parse(SerializedCar)
+
+    expect(DeserializedCar.owner.name).to.equal('John Doe')
+  })
+})

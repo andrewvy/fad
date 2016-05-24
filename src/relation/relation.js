@@ -1,4 +1,4 @@
-export class Relation {
+export default class Relation {
   constructor(modelType, options) {
     this.modelType = modelType
     this.sourceModelType = null
@@ -22,24 +22,5 @@ export class Relation {
 
   updateReferencingId(id) {
     this.referencingId = id
-  }
-}
-
-export class HasOne extends Relation {
-  primaryKey() {
-    return this.options.key || `${this.propName}_id`
-  }
-}
-
-export class HasMany extends Relation {
-  primaryKey() {
-    return this.options.reverse_key || `${this.modelType}_id`
-  }
-}
-
-export class UnloadedAssociation {
-  constructor(modelType, id) {
-    this.modelType = modelType
-    this.id = id
   }
 }

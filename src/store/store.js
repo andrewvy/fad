@@ -1,4 +1,4 @@
-import { isObject } from './utils/types'
+import { isObject } from '../utils/types'
 
 export class Store {
   constructor() {
