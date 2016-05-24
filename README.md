@@ -1,6 +1,9 @@
 # fad - framework-agnostic data
 
+Disclaimer: work-in-progress. Please do not use in production.
+
 [![Codeship Build Status](https://codeship.com/projects/86061510-0365-0134-078c-16bd53bff421/status?branch=master)](https://codeship.com/projects/153844)
+
 
 Framework-Agnostic Data (representation)
 
@@ -18,6 +21,14 @@ Heavily inspired by React/Redux.
 - This is not an full-featured ORM. It only provides simple methods to compose data types together.
 - This does not communicate to any back-end. It only provides methods to create adapters for (de)serialization.
 
+### Why?
+
+Most data layers are tightly coupled to web application frameworks. This can make it difficult when
+representing the same data across multiple web frameworks for different applications.
+
+Some data layers are fairly complex, and provide a lot of functionality outside of the box.
+
+`fad` tries to be different by making the API as simple and powerful as possible to allow for complete extensibility.
 
 ### Example Implementation:
 
@@ -120,7 +131,7 @@ Post.js
 export default createModelType(Store, {
   propTypes: {
     content: ModelTypes.string,
-    author: ModelTypes.hasOne(User)
+    author: ModelTypes.belongsTo(User)
   }
 })
 ```
@@ -160,7 +171,7 @@ Still undecided. Researching a reducer style approach.
 export default createModelType(Store, {
   propTypes: {
     content: ModelTypes.string,
-    author: ModelTypes.hasOne(User)
+    author: ModelTypes.belongsTo(User)
   },
 
   update(state, action) {
