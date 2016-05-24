@@ -81,3 +81,33 @@ export function del(obj, path) {
 
   return obj
 }
+
+export const get = (obj, path, defaultValue) => {
+  if (isNumber(path)) {
+    path = [path]
+  }
+
+  if (isEmpty(path)) {
+    return obj
+  }
+
+  if (isEmpty(obj)) {
+    return defaultValue
+  }
+
+  if (isString(path)) {
+    return get(obj, path.split('.'), defaultValue)
+  }
+
+  let currentPath = getKey(path[0])
+
+  if (path.length === 1) {
+    if (obj[currentPath] === void 0) {
+      return defaultValue
+    }
+
+    return obj[currentPath]
+  }
+
+  return get(obj[currentPath], path.slice(1), defaultValue)
+}

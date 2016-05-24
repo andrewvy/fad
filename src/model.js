@@ -1,5 +1,5 @@
 import { isEmpty, toString, isNumber, isString, isObject, isArray, isBoolean, isFunction } from './utils/types'
-import { getKey, set, del } from './utils/path'
+import { getKey, get, set, del } from './utils/path'
 import { Store } from './store'
 import { Relation, HasOne, HasMany, UnloadedAssociation } from './relation'
 import util from 'util'
@@ -42,29 +42,7 @@ export default class Model {
    * @return {*} The property value
    */
   get(path, defaultValue) {
-    if (isNumber(path)) {
-      path = [path]
-    }
-    if (isEmpty(path)) {
-      return this
-    }
-    if (isEmpty(this)) {
-      return defaultValue
-    }
-    if (isString(path)) {
-      return this.get(path.split('.'), defaultValue)
-    }
-
-    let currentPath = getKey(path[0])
-
-    if (path.length === 1) {
-      if (this[currentPath] === void 0) {
-        return defaultValue
-      }
-      return this[currentPath]
-    }
-
-    return this.get(this[currentPath], path.slice(1), defaultValue)
+    return get(this, path, defaultValue)
   }
 
   /**
@@ -73,7 +51,7 @@ export default class Model {
    * @param {*} element - The element to insert into the property.
    */
   push(path) {
-    let arr = this.get(this, path)
+    let arr = get(this, path)
     if (!isArray(arr)) {
       arr = []
       this.set(path, arr)

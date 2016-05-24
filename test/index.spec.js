@@ -172,6 +172,11 @@ describe('Model Relationships', () => {
 
   it('Adding a new model creates an instance in the store', () => {
     expect(Car1.get('owner')).to.equal(Owner)
+    expect(Car1.get('owner.name')).to.equal('John Doe')
+
+    Owner.set('name', 'Jane Doe')
+
+    expect(Car1.get('owner.name')).to.equal('Jane Doe')
   })
 
   it('Referencing existing model adds it as an associated model', () => {
