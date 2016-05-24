@@ -1,6 +1,7 @@
 import { isEmpty, toString, isNumber, isString, isObject, isArray, isBoolean } from './utils/types'
 import { getKey, set, del } from './utils/path'
 import { Store } from './store'
+import { HasOne, HasMany } from './relation'
 import util from 'util'
 
 /**
@@ -14,7 +15,9 @@ export const ModelTypes = {
   bool: Symbol(),
   number: Symbol(),
   string: Symbol(),
-  array: Symbol()
+  array: Symbol(),
+  hasOne: HasOne,
+  hasMany: HasMany
 }
 
 export default class Model {
@@ -22,10 +25,22 @@ export default class Model {
   serialize() {}
   validate() {}
 
+  /**
+   * Sets a deeply nested value on the model.
+   * @param {string} path - The stringified path of the property
+   * @param {*} value - The value to set at this path.
+   * @param {Boolean} doNotReplace - Whether or not we should replace the value at this property with the given one.
+   */
   set(path, value, doNotReplace) {
     return set(this, path, value, doNotReplace)
   }
 
+  /**
+   * Gets a deeply nested value from the model.
+   * @param {string} path - The stringified path of the property
+   * @param {*} defaultValue - The default value returned in the event no property is found.
+   * @return {*} The property value
+   */
   get(path, defaultValue) {
     if (isNumber(path)) {
       path = [path]
@@ -52,6 +67,11 @@ export default class Model {
     return this.get(this[currentPath], path.slice(1), defaultValue)
   }
 
+  /**
+   * Pushes an element into an array at a deeply nested path.
+   * @param {string} path - The stringified path of the property
+   * @param {*} element - The element to insert into the property.
+   */
   push(path) {
     let arr = this.get(this, path)
     if (!isArray(arr)) {

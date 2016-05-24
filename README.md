@@ -57,7 +57,7 @@ import Wheel from './Wheel'
 export default createModelType(Store, {
   propTypes: {
     name: ModelTypes.string,
-    wheels: [Wheel.type]
+    wheels: ModelTypes.HasMany(Wheel, { reverseKey: 'car_id' })
   }
 })
 ```

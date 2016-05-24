@@ -34,7 +34,7 @@ describe('Model Type Creation', () => {
   })
 })
 
-describe('Model Attribute Validations', () => {
+describe('Model Attribute Validation', () => {
   it('Throws an error on extra attribute', () => {
     const Store = createStore()
 
@@ -57,7 +57,7 @@ describe('Model Attribute Validations', () => {
   })
 })
 
-describe('Adding models reflects in the store', () => {
+describe('Store', () => {
   it('Adding a new model creates an instance in the store', () => {
     const Store = createStore()
 
@@ -95,4 +95,7 @@ describe('Adding models reflects in the store', () => {
     expect(createCar).to.not.throw()
     expect(createCar).to.throw(Error, '[fad] Model with id 1 already exists in store')
   })
+})
+
+describe('Model Relationships', () => {
 })
