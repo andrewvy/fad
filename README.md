@@ -80,7 +80,7 @@ export default fad.createModelType(Store, {
 })
 ```
 
-### Mixins
+### Mixins (not yet implemented)
 
 Completeable.js
 
@@ -103,7 +103,7 @@ export default fad.createModelType(Store, {
 })
 ```
 
-### Serialization
+### Serialization (not yet implemented)
 
 Since the serialize methods on models are idempotent and composable, we can compose a
 single serialize method that is a combination of nested serialized methods.
@@ -174,7 +174,7 @@ newPost.serialize()
 
 ```
 
-### Events
+### Events (not yet implemented)
 
 Still undecided. Researching a reducer style approach.
 
