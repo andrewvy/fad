@@ -144,4 +144,44 @@ describe('Store', () => {
 })
 
 describe('Model Relationships', () => {
+  const Store = fad.createStore()
+
+  const CarModel = fad.createModelType('car', Store, {
+    propTypes: {
+      name: fad.ModelTypes.string,
+      owner: fad.ModelTypes.hasOne('owner', { key: 'owner_id' })
+    }
+  })
+
+  const OwnerModel = fad.createModelType('owner', Store, {
+    propTypes: {
+      name: fad.ModelTypes.string
+    }
+  })
+
+  const Car1 = new CarModel({
+    id: 1,
+    name: 'Generic Car',
+    owner_id: 1
+  })
+
+  const Owner = new OwnerModel({
+    id: 1,
+    name: 'John Doe'
+  })
+
+  it('Adding a new model creates an instance in the store', () => {
+    expect(Car1.get('owner')).to.equal(Owner)
+  })
+
+  it('Adding a new model creates an instance in the store', () => {
+    const Car2 = new CarModel({
+      id: 2,
+      name: 'Generic Car',
+      owner_id: 1
+    })
+
+    expect(Car2.get('owner')).to.not.be.undefined
+    expect(Car2.get('owner')).to.equal(Owner)
+  })
 })

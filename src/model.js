@@ -1,7 +1,7 @@
 import { isEmpty, toString, isNumber, isString, isObject, isArray, isBoolean, isFunction } from './utils/types'
 import { getKey, set, del } from './utils/path'
 import { Store } from './store'
-import { HasOne, HasMany } from './relation'
+import { Relation, HasOne, HasMany } from './relation'
 import util from 'util'
 
 /**
@@ -16,8 +16,8 @@ export const ModelTypes = {
   number: Symbol(),
   string: Symbol(),
   array: Symbol(),
-  hasOne: (model, options) => new HasOne(model, options),
-  hasMany: (model, options) => new HasMany(model, options)
+  hasOne: (modelType, options) => new HasOne(modelType, options),
+  hasMany: (modelType, options) => new HasMany(modelType, options)
 }
 
 export default class Model {
@@ -102,27 +102,6 @@ function mixSpecificationIntoModelType(Constructor, spec) {
   }
 }
 
-function applyProps(instance, props) {
-  let proto = instance.propTypes || {}
-  let defaults = instance.__$defaultProps || {}
-
-  for (let name in defaults) {
-    let propTypeDefined = proto.hasOwnProperty(name)
-
-    if (propTypeDefined || name === 'id') {
-      instance[name] = defaults[name]
-    }
-  }
-
-  for (let name in props) {
-    let propTypeDefined = proto.hasOwnProperty(name)
-
-    if (propTypeDefined || name === 'id') {
-      instance[name] = props[name]
-    }
-  }
-}
-
 function calculateDefaultProps(Constructor) {
   let proto = Constructor.prototype.propTypes || {}
   let defaults = isFunction(Constructor.prototype.getDefaultProps) ? Constructor.prototype.getDefaultProps() : {}
@@ -152,13 +131,121 @@ function calculateDefaultProps(Constructor) {
   Constructor.prototype.__$defaultProps = defaults
 }
 
+/**
+ * This sets up the relationships to be set on the model class constructor.
+ *
+ * We check if there's already implicit relationships defined, in which
+ * case we remove the relations where we explicitly define them.
+ * (As other model types could have defined their relations ahead of time).
+ *
+ * After we explicitly store our relations, we then check which relations
+ * could possibly be implicit on other models.
+ */
+
+function setupClassRelationships(Constructor) {
+  let propTypes = Constructor.prototype.propTypes || {}
+  let store = Constructor.prototype.store
+
+  for (let propName in propTypes) {
+    if (propTypes[propName] instanceof Relation) {
+      // Get relation and update it with appropriate
+      // metadata around the relationship.
+      let relation = propTypes[propName]
+      relation.updatePropName(propName)
+      relation.updateSourceModelType(Constructor.type)
+
+      store.defineImplicitRelation(relation)
+    }
+  }
+}
+
+function applyProps(instance, props) {
+  let proto = instance.propTypes || {}
+  let defaults = instance.__$defaultProps || {}
+
+  for (let name in defaults) {
+    let propTypeDefined = proto.hasOwnProperty(name)
+
+    if (propTypeDefined || name === 'id') {
+      instance[name] = defaults[name]
+    }
+  }
+
+  for (let name in props) {
+    let propTypeDefined = proto.hasOwnProperty(name)
+
+    if (propTypeDefined || name === 'id') {
+      instance[name] = props[name]
+    }
+  }
+}
+
+function setupRelationships(instance, props) {
+  instance.__$relations = {}
+
+  let store = instance.store
+  let propTypes = instance.propTypes || {}
+  let allImplicitRelations = store.getImplicitRelations(instance.__$modeltype)
+
+  for (let propName in propTypes) {
+    if (propTypes[propName] instanceof Relation) {
+      // Get relation and update it with appropriate
+      // metadata around the relationship.
+      let classRelation = propTypes[propName]
+      let relation = new classRelation.constructor(classRelation.modelType, classRelation.options)
+      relation.updatePropName(propName)
+      relation.updateSourceModelType(instance.__$modeltype)
+      relation.updateSource(instance)
+      instance.__$relations[propName] = relation
+
+      store.defineImplicitRelation(instance.guid, relation)
+
+      if (props[relation.primaryKey()]) {
+        let id = props[relation.primaryKey()]
+        relation.updateReferencingId(id)
+
+        let modelConstructor = store.findModelType(relation.modelType)
+        let associatedInstance = store.find(modelConstructor, id)
+
+        if (associatedInstance !== undefined) {
+          instance[propName] = associatedInstance
+        }
+      }
+    }
+  }
+
+  allImplicitRelations.forEach((implicitObject) => {
+    for (let referencedInstanceGuid in implicitObject) {
+      let relations = implicitObject[referencedInstanceGuid]
+
+      for (let relationPropName in relations) {
+        let relation = relations[relationPropName]
+
+        if (relation.referencingId === instance.id) {
+          relation.source[relationPropName] = instance
+        }
+      }
+    }
+  })
+}
+
+let idCounter = 0
+function uniqueId(prefix) {
+  let id = ++idCounter + ''
+  return prefix ? prefix + id : id
+}
+
 export function createModelType(type, store, spec) {
   let isUsingStore = store instanceof Store
 
   let Constructor = function(props) {
+    this.guid = uniqueId('g')
     applyProps(this, props)
 
-    if (this.reducer) this.reducer(this)
+    if (this.store instanceof Store) {
+      this.store.addModel(this)
+      setupRelationships(this, props)
+    }
   }
 
   if (!isUsingStore && isObject(store)) {
@@ -175,7 +262,11 @@ export function createModelType(type, store, spec) {
   Constructor.prototype = new Model()
   Constructor.prototype.propTypes = isObject(store) === true ? spec.propTypes : {}
   Constructor.prototype.__$modeltype = Constructor.type
-  Constructor.prototype.reducer = store.reducer
+  Constructor.prototype.__$isUsingStore = isUsingStore
+
+  if (isUsingStore) {
+    Constructor.prototype.store = store
+  }
 
   if (spec.propTypes) {
     delete spec.propTypes
