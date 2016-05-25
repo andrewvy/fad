@@ -178,6 +178,11 @@ function applyProps(instance, props) {
 }
 
 function setupRelationships(instance, props) {
+  Object.defineProperty(instance, '__$relations', {
+    enumerable: false,
+    writable: true
+  })
+
   instance.__$relations = {}
 
   let store = instance.store
@@ -238,7 +243,13 @@ export function createModelType(type, store, spec) {
   let isUsingStore = store instanceof Store
 
   let Constructor = function(props) {
+    Object.defineProperty(this, 'guid', {
+      enumerable: false,
+      writable: true
+    })
+
     this.guid = uniqueId('g')
+
     applyProps(this, props)
 
     if (this.store instanceof Store) {
