@@ -146,6 +146,13 @@ describe('Store', () => {
 describe('Model Relationships', () => {
   const Store = fad.createStore()
 
+  const ParkingModel = fad.createModelType('garage', Store, {
+    propTypes: {
+      location: fad.ModelTypes.string,
+      car: fad.ModelTypes.hasOne('car', { key: 'car_id' })
+    }
+  })
+
   const CarModel = fad.createModelType('car', Store, {
     propTypes: {
       name: fad.ModelTypes.string,
@@ -198,6 +205,16 @@ describe('Model Relationships', () => {
     })
 
     expect(Car3.get('owner') instanceof fad.UnloadedAssociation).to.be.true
+  })
+
+  it('Nested relations with nested relations', () => {
+    const ParkingSpot = new ParkingModel({
+      location: 'Driveway',
+      car_id: 1
+    })
+
+    expect(ParkingSpot.get('car')).to.equal(Car1)
+    expect(ParkingSpot.get('car.owner')).to.equal(Owner)
   })
 })
 
