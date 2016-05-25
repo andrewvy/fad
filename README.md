@@ -93,7 +93,7 @@ Completeable.js
 ```js
 export default fad.createModelMixin({
   propTypes: {
-    completed: fad.ModelTypes.bool
+    completed: fad.PropTypes.bool
   }
 })
 ```
@@ -104,7 +104,7 @@ Task.js
 export default fad.createModelType(Store, {
   mixins: [Completeable],
   propTypes: {
-    title: fad.ModelTypes.string
+    title: fad.PropTypes.string
   }
 })
 ```
@@ -126,8 +126,8 @@ User.js
 ```js
 export default fad.createModelType(Store, {
   propTypes: {
-    firstName: fad.ModelTypes.string,
-    lastName: fad.ModelTypes.string
+    firstName: fad.PropTypes.string,
+    lastName: fad.PropTypes.string
   },
 
   fullName: computed('firstName', 'lastName', () => {
@@ -147,8 +147,8 @@ Post.js
 ```js
 export default fad.createModelType(Store, {
   propTypes: {
-    content: fad.ModelTypes.string,
-    author: fad.ModelTypes.belongsTo(User)
+    content: fad.PropTypes.string,
+    author: fad.PropTypes.belongsTo(User)
   }
 })
 ```
@@ -187,8 +187,8 @@ Still undecided. Researching a reducer style approach.
 ```js
 export default fad.createModelType(Store, {
   propTypes: {
-    content: fad.ModelTypes.string,
-    author: fad.ModelTypes.belongsTo(User)
+    content: fad.PropTypes.string,
+    author: fad.PropTypes.belongsTo(User)
   },
 
   update(state, action) {

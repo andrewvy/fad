@@ -7,13 +7,13 @@ describe('Model Type Creation', () => {
 
   const CarModel = fad.createModelType('car', Store, {
     propTypes: {
-      name: fad.ModelTypes.string
+      name: fad.PropTypes.string
     }
   })
 
   const PlaneModel = fad.createModelType('plane', Store, {
     propTypes: {
-      name: fad.ModelTypes.string
+      name: fad.PropTypes.string
     }
   })
 
@@ -52,7 +52,7 @@ describe('Model Attribute Validation', () => {
 
   const CarModel = fad.createModelType('car', Store, {
     propTypes: {
-      name: fad.ModelTypes.string
+      name: fad.PropTypes.string
     }
   })
 
@@ -69,10 +69,10 @@ describe('Model Attribute Validation', () => {
   it('Creates default attributes based on propTypes', () => {
     const EverythingModel = fad.createModelType('everything', {
       propTypes: {
-        string: fad.ModelTypes.string,
-        bool: fad.ModelTypes.bool,
-        number: fad.ModelTypes.number,
-        array: fad.ModelTypes.array
+        string: fad.PropTypes.string,
+        bool: fad.PropTypes.bool,
+        number: fad.PropTypes.number,
+        array: fad.PropTypes.array
       }
     })
 
@@ -87,10 +87,10 @@ describe('Model Attribute Validation', () => {
   it('getDefaultProps runs', () => {
     const EverythingModel = fad.createModelType('everything', {
       propTypes: {
-        string: fad.ModelTypes.string,
-        bool: fad.ModelTypes.bool,
-        number: fad.ModelTypes.number,
-        array: fad.ModelTypes.array
+        string: fad.PropTypes.string,
+        bool: fad.PropTypes.bool,
+        number: fad.PropTypes.number,
+        array: fad.PropTypes.array
       },
 
       getDefaultProps: () => {
@@ -117,7 +117,7 @@ describe('Store', () => {
 
   const CarModel = fad.createModelType('car', Store, {
     propTypes: {
-      name: fad.ModelTypes.string
+      name: fad.PropTypes.string
     }
   })
 
@@ -148,21 +148,21 @@ describe('Model Relationships', () => {
 
   const ParkingModel = fad.createModelType('garage', Store, {
     propTypes: {
-      location: fad.ModelTypes.string,
-      car: fad.ModelTypes.hasOne('car', { key: 'car_id' })
+      location: fad.PropTypes.string,
+      car: fad.PropTypes.hasOne('car', { key: 'car_id' })
     }
   })
 
   const CarModel = fad.createModelType('car', Store, {
     propTypes: {
-      name: fad.ModelTypes.string,
-      owner: fad.ModelTypes.hasOne('owner', { key: 'owner_id' })
+      name: fad.PropTypes.string,
+      owner: fad.PropTypes.hasOne('owner', { key: 'owner_id' })
     }
   })
 
   const OwnerModel = fad.createModelType('owner', Store, {
     propTypes: {
-      name: fad.ModelTypes.string
+      name: fad.PropTypes.string
     }
   })
 
@@ -223,14 +223,14 @@ describe('Model Serialization', () => {
 
   const CarModel = fad.createModelType('car', Store, {
     propTypes: {
-      name: fad.ModelTypes.string,
-      owner: fad.ModelTypes.hasOne('owner', { key: 'owner_id' })
+      name: fad.PropTypes.string,
+      owner: fad.PropTypes.hasOne('owner', { key: 'owner_id' })
     }
   })
 
   const OwnerModel = fad.createModelType('owner', Store, {
     propTypes: {
-      name: fad.ModelTypes.string
+      name: fad.PropTypes.string
     }
   })
 

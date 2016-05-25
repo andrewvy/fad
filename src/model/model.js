@@ -6,7 +6,7 @@ import { Store } from '../store/store'
 import Relation from '../relation/relation'
 import UnloadedAssociation from '../relation/unloaded_association'
 
-import ModelTypes from './model_types'
+import PropTypes from './model_types'
 
 /**
  * Heavily inspired by React's createClass and Class Mixin behaviour,
@@ -110,16 +110,16 @@ function calculateDefaultProps(Constructor) {
     if (propertyDefined) continue
 
     switch (propType) {
-      case ModelTypes.bool:
+      case PropTypes.bool:
         defaults[name] = false
         break
-      case ModelTypes.number:
+      case PropTypes.number:
         defaults[name] = 0
         break
-      case ModelTypes.string:
+      case PropTypes.string:
         defaults[name] = ''
         break
-      case ModelTypes.array:
+      case PropTypes.array:
         defaults[name] = []
         break
     }
