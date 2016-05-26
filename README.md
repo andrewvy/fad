@@ -37,14 +37,14 @@ import fad from 'fad'
 
 let store = fad.createStore()
 
-const Owner = fad.createModelType('owner', store, {
+const Owner = fad.createModel('owner', store, {
   propTypes: {
     firstName: fad.PropTypes.string,
     lastName: fad.PropTypes.string
   }
 })
 
-const Car = fad.createModelType('car', store, {
+const Car = fad.createModel('car', store, {
   propTypes: {
     name: fad.PropTypes.string,
     owner: fad.PropTypes.hasOne('owner', { key: 'owner_id' })
@@ -101,7 +101,7 @@ export default fad.createModelMixin({
 Task.js
 
 ```js
-export default fad.createModelType(Store, {
+export default fad.createModel(Store, {
   mixins: [Completeable],
   propTypes: {
     title: fad.PropTypes.string
@@ -124,7 +124,7 @@ The default serialization method will default to propType names.
 User.js
 
 ```js
-export default fad.createModelType(Store, {
+export default fad.createModel(Store, {
   propTypes: {
     firstName: fad.PropTypes.string,
     lastName: fad.PropTypes.string
@@ -145,7 +145,7 @@ export default fad.createModelType(Store, {
 Post.js
 
 ```js
-export default fad.createModelType(Store, {
+export default fad.createModel(Store, {
   propTypes: {
     content: fad.PropTypes.string,
     author: fad.PropTypes.belongsTo(User)
@@ -189,7 +189,7 @@ import fad from 'fad'
 
 const Store = fad.createStore()
 
-const Car = fad.createModelType('car', Store, {
+const Car = fad.createModel('car', Store, {
   propTypes: {
     name: fad.PropTypes.string,
     type: fad.PropTypes.string,

@@ -1,4 +1,5 @@
 import { isObject } from '../utils/types'
+import Model from '../model/model'
 
 export class Store {
   constructor() {
@@ -8,6 +9,8 @@ export class Store {
 
     this.models = {}
     this.instanceRelations = {}
+
+    this.createModel = Model.createModel
   }
 
   /**

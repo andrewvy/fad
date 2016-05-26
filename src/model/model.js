@@ -36,7 +36,7 @@ const toJSON = (object) => {
   return json
 }
 
-export default class Model {
+export default class ModelType {
   deserialize() {}
   serialize() {
     return JSON.stringify(toJSON(this))
@@ -253,55 +253,59 @@ function uniqueId(prefix) {
   return prefix ? prefix + id : id
 }
 
-export function createModelType(type, store, spec) {
-  let isUsingStore = store instanceof Store
+const Model = {
+  createModel: (type, store, spec) => {
+    let isUsingStore = store instanceof Store
 
-  let Constructor = function(props) {
-    Object.defineProperty(this, 'guid', {
-      enumerable: false,
-      writable: true
-    })
+    let Constructor = function(props) {
+      Object.defineProperty(this, 'guid', {
+        enumerable: false,
+        writable: true
+      })
 
-    this.guid = uniqueId('g')
+      this.guid = uniqueId('g')
 
-    applyProps(this, props)
+      applyProps(this, props)
 
-    if (this.store instanceof Store) {
-      this.store.addModel(this)
-      setupRelationships(this, props)
+      if (this.store instanceof Store) {
+        this.store.addModel(this)
+        setupRelationships(this, props)
+      }
     }
+
+    if (!isUsingStore && isObject(store)) {
+      spec = store
+    }
+
+    if (!isString(type)) {
+      throw new Error('[fad] Expected first argument to createModel to be name of model type')
+    }
+
+    Constructor.type = type
+    Constructor.constructor = Constructor
+
+    Constructor.prototype = new ModelType()
+    Constructor.prototype.propTypes = isObject(store) === true ? spec.propTypes : {}
+    Constructor.prototype.__$modeltype = Constructor.type
+    Constructor.prototype.__$isUsingStore = isUsingStore
+
+    if (isUsingStore) {
+      Constructor.prototype.store = store
+    }
+
+    if (spec.propTypes) {
+      delete spec.propTypes
+    }
+
+    if (isUsingStore) {
+      store.addModelType(Constructor)
+    }
+
+    mixSpecificationIntoModelType(Constructor, spec)
+    calculateDefaultProps(Constructor)
+
+    return Constructor
   }
-
-  if (!isUsingStore && isObject(store)) {
-    spec = store
-  }
-
-  if (!isString(arguments[0])) {
-    throw new Error('[fad] Expected first argument to createModelType to be name of model type')
-  }
-
-  Constructor.type = type
-  Constructor.constructor = Constructor
-
-  Constructor.prototype = new Model()
-  Constructor.prototype.propTypes = isObject(store) === true ? spec.propTypes : {}
-  Constructor.prototype.__$modeltype = Constructor.type
-  Constructor.prototype.__$isUsingStore = isUsingStore
-
-  if (isUsingStore) {
-    Constructor.prototype.store = store
-  }
-
-  if (spec.propTypes) {
-    delete spec.propTypes
-  }
-
-  if (isUsingStore) {
-    store.addModelType(Constructor)
-  }
-
-  mixSpecificationIntoModelType(Constructor, spec)
-  calculateDefaultProps(Constructor)
-
-  return Constructor
 }
+
+export default Model
