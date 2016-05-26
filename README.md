@@ -37,14 +37,14 @@ import fad from 'fad'
 
 let store = fad.createStore()
 
-const Owner = fad.createModel('owner', store, {
+const Owner = fad.createModelType('owner', store, {
   propTypes: {
     firstName: fad.PropTypes.string,
     lastName: fad.PropTypes.string
   }
 })
 
-const Car = fad.createModel('car', store, {
+const Car = fad.createModelType('car', store, {
   propTypes: {
     name: fad.PropTypes.string,
     owner: fad.PropTypes.hasOne('owner', { key: 'owner_id' })
@@ -182,35 +182,46 @@ newPost.serialize()
 
 ### Events (not yet implemented)
 
-Still undecided. Researching a reducer style approach.
+Still brainstorming.
 
 ```js
-export default fad.createModelType(Store, {
-  propTypes: {
-    content: fad.PropTypes.string,
-    author: fad.PropTypes.belongsTo(User)
-  },
+import fad from 'fad'
 
-  update(state, action) {
-    switch(action.type) {
-      case 'UPDATE_CONTENT':
-        return Object.assign({}, state, { content: action.content })
-      default:
-        return state
-    }
+const Store = fad.createStore()
+
+const Car = fad.createModelType('car', Store, {
+  propTypes: {
+    name: fad.PropTypes.string,
+    type: fad.PropTypes.string,
+    passengers: fad.PropTypes.number
   }
 })
+
+let car = new Car({
+  name: 'Foo',
+  type: 'Bar'
+})
+
+// reactive
+let subscription = car.stream('passengers')
+  .filter((passengers) => passengers > 5)
+  .subscribe(() => {
+    throw new Error('Car is full!')
+  })
+
+subscription.unsubscribe()
+
+// traditional
+
+const Listener = fad.createListener()
+
+Listener.on(car, 'passengers', () => {
+  let passengers = car.get('passengers')
+  if (passengers > 5) throw new Error('Car is full!')
+})
+
+Listener.off()
 ```
-
-The traditional listener approach
-
-```js
-store.listenTo(this, post, "change:content", callback) // Listen for changes on the post content
-store.off(this) // Clears all listeners bound to this
-store.off(this, "change:content") // Clears the "change:content" listener
-```
-
-?
 
 ---
 
