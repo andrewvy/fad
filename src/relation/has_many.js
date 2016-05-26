@@ -5,4 +5,3 @@ export default class HasMany extends Relation {
     return this.options.reverse_key || `${this.modelType}_id`
   }
 }
-

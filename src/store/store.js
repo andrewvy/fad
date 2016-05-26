@@ -4,6 +4,7 @@ export class Store {
   constructor() {
     this.modelTypes = {}
     this.implicitRelations = {}
+    this.unresolvedRelations = {}
 
     this.models = {}
     this.instanceRelations = {}
@@ -65,7 +66,7 @@ export class Store {
     this.implicitRelations[`${to}:${from}`] = allRelations
   }
 
-  undefineImplicitRelation(guid, relation) {
+  undefineImplicitRelation(relation) {
     let from = relation.sourceModelType
     let to = relation.modelType
 
@@ -79,6 +80,35 @@ export class Store {
     return implicitKeys.filter((implicitKey) => {
       return implicitKey.substr(0, modelTypeLength) === modelType
     }).map((implicitKey) => this.implicitRelations[implicitKey])
+  }
+
+  defineUnresolvedRelation(guid, relation) {
+    let from = relation.sourceModelType
+    let to = relation.modelType
+
+    let allRelations = this.unresolvedRelations[`${to}:${from}`] || {}
+    let instanceRelations = allRelations[guid] || {}
+
+    instanceRelations[relation.propName] = relation
+
+    allRelations[guid] = instanceRelations
+    this.unresolvedRelations[`${to}:${from}`] = allRelations
+  }
+
+  undefineUnresolvedRelation(relation) {
+    let from = relation.sourceModelType
+    let to = relation.modelType
+
+    delete this.unresolvedRelations[`${from}:${to}`]
+  }
+
+  getUnresolvedRelations(modelType) {
+    let unresolvedKeys = Object.keys(this.unresolvedRelations)
+    let modelTypeLength = modelType.length
+
+    return unresolvedKeys.filter((unresolvedKey) => {
+      return unresolvedKey.substr(0, modelTypeLength) === modelType
+    }).map((unresolvedKey) => this.unresolvedRelations[unresolvedKey])
   }
 
   /**

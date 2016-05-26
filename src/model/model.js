@@ -187,20 +187,26 @@ function setupRelationships(instance, props) {
 
   let store = instance.store
   let propTypes = instance.propTypes || {}
-  let allImplicitRelations = store.getImplicitRelations(instance.__$modeltype)
+  let allUnresolvedRelations = store.getUnresolvedRelations(instance.__$modeltype)
 
   for (let propName in propTypes) {
     if (propTypes[propName] instanceof Relation) {
       // Get relation and update it with appropriate
       // metadata around the relationship.
+
       let classRelation = propTypes[propName]
       let relation = new classRelation.constructor(classRelation.modelType, classRelation.options)
+
       relation.updatePropName(propName)
       relation.updateSourceModelType(instance.__$modeltype)
       relation.updateSource(instance)
       instance.__$relations[propName] = relation
 
-      store.defineImplicitRelation(instance.guid, relation)
+      // @todo(vy): Need to handle implicit HasMany relation
+      // if (relation instanceof HasOne) {
+      //   let implicitRelation = relation.createImplicitRelation()
+      //   store.defineImplicitRelation(instance.guid, implicitRelation)
+      // }
 
       if (props[relation.primaryKey()]) {
         let id = props[relation.primaryKey()]
@@ -212,21 +218,29 @@ function setupRelationships(instance, props) {
         if (associatedInstance !== undefined) {
           instance[propName] = associatedInstance
         } else {
+          // Associated model doesn't exist yet, so we'll
+          // create an UnloadedAssociation in place of it.
+          // And also create a reverse relationship to
+          // connect it back to this model instance.
           instance[propName] = new UnloadedAssociation(relation.modelType, id)
+          store.defineUnresolvedRelation(instance.guid, relation)
         }
       }
     }
   }
 
-  allImplicitRelations.forEach((implicitObject) => {
-    for (let referencedInstanceGuid in implicitObject) {
-      let relations = implicitObject[referencedInstanceGuid]
+  // Check for unresolved relations that could be bounded
+  // to this model instance.
+  allUnresolvedRelations.forEach((unresolveRelation) => {
+    for (let referencedInstanceGuid in unresolveRelation) {
+      let relations = unresolveRelation[referencedInstanceGuid]
 
       for (let relationPropName in relations) {
         let relation = relations[relationPropName]
 
         if (relation.referencingId === instance.id) {
           relation.source[relationPropName] = instance
+          store.undefineUnresolvedRelation(relation)
         }
       }
     }
