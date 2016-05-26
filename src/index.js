@@ -7,7 +7,7 @@ import UnloadedAssociation from './relation/unloaded_association'
 
 export default {
   PropTypes,
-  createModel: Model.createModel,
+  createModel: Model.createModel(),
   createStore,
   UnloadedAssociation
 }

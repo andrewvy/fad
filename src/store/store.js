@@ -10,7 +10,7 @@ export class Store {
     this.models = {}
     this.instanceRelations = {}
 
-    this.createModel = Model.createModel
+    this.createModel = Model.createModelWithStore(this)
   }
 
   /**

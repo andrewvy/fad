@@ -5,13 +5,13 @@ import util from 'util'
 describe('Model Type Creation', () => {
   const Store = fad.createStore()
 
-  const CarModel = fad.createModel('car', Store, {
+  const CarModel = Store.createModel('car', {
     propTypes: {
       name: fad.PropTypes.string
     }
   })
 
-  const PlaneModel = fad.createModel('plane', Store, {
+  const PlaneModel = Store.createModel('plane', {
     propTypes: {
       name: fad.PropTypes.string
     }
@@ -50,7 +50,7 @@ describe('Model Type Creation', () => {
 describe('Model Attribute Validation', () => {
   const Store = fad.createStore()
 
-  const CarModel = fad.createModel('car', Store, {
+  const CarModel = Store.createModel('car', {
     propTypes: {
       name: fad.PropTypes.string
     }
@@ -67,7 +67,7 @@ describe('Model Attribute Validation', () => {
   })
 
   it('Creates default attributes based on propTypes', () => {
-    const EverythingModel = fad.createModel('everything', {
+    const EverythingModel = Store.createModel('everything', {
       propTypes: {
         string: fad.PropTypes.string,
         bool: fad.PropTypes.bool,
@@ -85,7 +85,7 @@ describe('Model Attribute Validation', () => {
   })
 
   it('getDefaultProps runs', () => {
-    const EverythingModel = fad.createModel('everything', {
+    const EverythingModel = Store.createModel('everything', {
       propTypes: {
         string: fad.PropTypes.string,
         bool: fad.PropTypes.bool,
@@ -110,12 +110,20 @@ describe('Model Attribute Validation', () => {
     expect(model.get('number')).to.equal(42)
     expect(model.get('array')).to.be.include(1)
   })
+
+  it('Runs with no parameters', () => {
+    const createCar = () => {
+      return new CarModel()
+    }
+
+    expect(createCar).to.not.throw()
+  })
 })
 
 describe('Store', () => {
   const Store = fad.createStore()
 
-  const CarModel = fad.createModel('car', Store, {
+  const CarModel = Store.createModel('car', {
     propTypes: {
       name: fad.PropTypes.string
     }
@@ -146,21 +154,21 @@ describe('Store', () => {
 describe('Model Relationships', () => {
   const Store = fad.createStore()
 
-  const ParkingModel = fad.createModel('garage', Store, {
+  const ParkingModel = Store.createModel('garage', {
     propTypes: {
       location: fad.PropTypes.string,
       car: fad.PropTypes.hasOne('car', { key: 'car_id' })
     }
   })
 
-  const CarModel = fad.createModel('car', Store, {
+  const CarModel = Store.createModel('car', {
     propTypes: {
       name: fad.PropTypes.string,
       owner: fad.PropTypes.hasOne('owner', { key: 'owner_id' })
     }
   })
 
-  const OwnerModel = fad.createModel('owner', Store, {
+  const OwnerModel = Store.createModel('owner', {
     propTypes: {
       name: fad.PropTypes.string
     }
@@ -221,14 +229,14 @@ describe('Model Relationships', () => {
 describe('Model Serialization', () => {
   const Store = fad.createStore()
 
-  const CarModel = fad.createModel('car', Store, {
+  const CarModel = Store.createModel('car', {
     propTypes: {
       name: fad.PropTypes.string,
       owner: fad.PropTypes.hasOne('owner', { key: 'owner_id' })
     }
   })
 
-  const OwnerModel = fad.createModel('owner', Store, {
+  const OwnerModel = Store.createModel('owner', {
     propTypes: {
       name: fad.PropTypes.string
     }

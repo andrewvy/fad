@@ -37,14 +37,14 @@ import fad from 'fad'
 
 let store = fad.createStore()
 
-const Owner = fad.createModel('owner', store, {
+const Owner = store.createModel('owner', {
   propTypes: {
     firstName: fad.PropTypes.string,
     lastName: fad.PropTypes.string
   }
 })
 
-const Car = fad.createModel('car', store, {
+const Car = store.createModel('car', {
   propTypes: {
     name: fad.PropTypes.string,
     owner: fad.PropTypes.hasOne('owner', { key: 'owner_id' })
@@ -101,7 +101,7 @@ export default fad.createModelMixin({
 Task.js
 
 ```js
-export default fad.createModel(Store, {
+export default fad.createModel('task', {
   mixins: [Completeable],
   propTypes: {
     title: fad.PropTypes.string
@@ -121,10 +121,20 @@ Mixins with properties will be flattened to the parent, while nested relationshi
 
 The default serialization method will default to propType names.
 
-User.js
+store.js
 
 ```js
-export default fad.createModel(Store, {
+import fad from 'fad'
+const Store = fad.createStore()
+export default Store
+```
+
+user.js
+
+```js
+import Store from './store'
+
+export default Store.createModel('user', {
   propTypes: {
     firstName: fad.PropTypes.string,
     lastName: fad.PropTypes.string
@@ -142,13 +152,15 @@ export default fad.createModel(Store, {
 })
 ```
 
-Post.js
+post.js
 
 ```js
-export default fad.createModel(Store, {
+import Store from './store'
+
+export default Store.createModel('post', {
   propTypes: {
     content: fad.PropTypes.string,
-    author: fad.PropTypes.belongsTo(User)
+    author: fad.PropTypes.belongsTo('user')
   }
 })
 ```
@@ -189,7 +201,7 @@ import fad from 'fad'
 
 const Store = fad.createStore()
 
-const Car = fad.createModel('car', Store, {
+const Car = Store.createModel('car', {
   propTypes: {
     name: fad.PropTypes.string,
     type: fad.PropTypes.string,
